@@ -22,6 +22,7 @@ public class Converter {
     private HashMap<String, String> subjects = new HashMap<>();
     private String currentSubject = null;
     private String currentEntry = null;
+    private boolean subjectChanged = false;
     
     public void run(Task task) {
         if (task.lastInput == null) {
@@ -48,6 +49,10 @@ public class Converter {
                 }
             }
             
+            if (currentEntry != null) {
+                sqfEndEntry();
+            }
+            
             in.close();
             fReader.close();
         } catch (Exception err) {
@@ -70,6 +75,10 @@ public class Converter {
     private void handleSubject(String subjectName) {
         String subjectUid = null;
         
+        if (currentEntry != null) {
+            sqfEndEntry();
+        }
+        
         if (!subjects.containsKey(subjectName)) {
             subjectUid = "subject" + subjectUidCounter;
             subjectUidCounter++;
@@ -79,13 +88,16 @@ public class Converter {
         }
         
         currentSubject = subjectUid;
+        subjectChanged = true;
         
         sqfCreateSubject(subjectUid, subjectName);
     }
     
     private void handleEntry(String entryName) {
-        if (currentEntry != null) {
+        if (!subjectChanged && currentEntry != null) {
             sqfEndEntry();
+        } else if (subjectChanged) {
+            subjectChanged = false;
         }
         
         currentEntry = entryName;
@@ -97,14 +109,14 @@ public class Converter {
     }
     
     private void sqfCreateSubject(String subjectUid, String subjectName) {
-        outputBuffer += "player createDiarySubject [\"" + subjectUid + "\",\"" + subjectName + "\"]\n";
+        outputBuffer += "player createDiarySubject [\"" + subjectUid + "\",\"" + subjectName + "\"];\n";
     }
     
     private void sqfStartEntry(String subjectUid, String entryName) {
-        outputBuffer += "player createDiaryRecord [\"" + subjectUid + "\", [ \"" + entryName + "\" , \"\n";
+        outputBuffer += "player createDiaryRecord [\"" + subjectUid + "\", [ \"" + entryName + "\" , \";\n";
     }
     
     private void sqfEndEntry() {
-        outputBuffer += "\" ]]\n";
+        outputBuffer += "\" ]];\n";
     }
 }
