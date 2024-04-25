@@ -113,7 +113,7 @@ public class Converter {
     }
     
     private void sqfStartEntry(String subjectUid, String entryName) {
-        outputBuffer += "player createDiaryRecord [\"" + subjectUid + "\", [ \"" + entryName + "\" , \";\n";
+        outputBuffer += "player createDiaryRecord [\"" + subjectUid + "\", [ \"" + entryName + "\" , \"\n";
     }
     
     private void sqfEndEntry() {
