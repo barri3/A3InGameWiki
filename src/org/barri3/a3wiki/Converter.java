@@ -40,9 +40,9 @@ public class Converter {
             while (in.ready()) {
                 String line = in.readLine();
                 
-                if (line.startsWith("### ")) {
+                if (line.startsWith("# ")) {
                     handleSubject(line.substring(4));
-                } else if (line.startsWith("# ")) {
+                } else if (line.startsWith("### ")) {
                     handleEntry(line.substring(2));
                 } else {
                     handleLine(line);
